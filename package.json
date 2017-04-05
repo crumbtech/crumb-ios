@@ -8,6 +8,7 @@
 	},
 	"dependencies": {
 		"react": "16.0.0-alpha.6",
+		"react-apollo": "^1.0.0",
 		"react-native": "0.43.0"
 	},
 	"devDependencies": {

@@ -1,45 +1,56 @@
-import React from 'react';
-import {
-  AppRegistry,
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native';
+import React, { PropTypes } from 'react';
+import { AppRegistry, StyleSheet, Text, View, ActivityIndicator } from 'react-native';
+import { ApolloClient, createNetworkInterface, ApolloProvider, graphql, gql } from 'react-apollo';
+
+const networkInterface = createNetworkInterface({
+  uri: 'http://localhost:5000/graphql',
+});
+
+const client = new ApolloClient({ networkInterface });
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#F5FCFF',
-  },
-  welcome: {
-    fontSize: 20,
-    textAlign: 'center',
-    margin: 10,
-  },
-  instructions: {
-    textAlign: 'center',
-    color: '#333333',
-    marginBottom: 5,
   },
 });
 
-export default function Crumb() {
+const query = gql`
+  query {
+    allCrumbs {
+      id,
+      status,
+    }
+  }`;
+
+function App({ data }) {
   return (
     <View style={styles.container}>
-      <Text style={styles.welcome}>
-        Welcome to React Native!
-      </Text>
-      <Text style={styles.instructions}>
-        To get started, edit index.ios.js
-      </Text>
-      <Text style={styles.instructions}>
-        Press Cmd+R to reload,{'\n'}
-        Cmd+D or shake for dev menu
-      </Text>
+      {data.loading ? (
+        <ActivityIndicator />
+      ) : (
+        data.allCrumbs.map(crumb => (
+          <Text>{`${crumb.id}: ${crumb.status}`}</Text>
+        ))
+      )}
     </View>
   );
 }
 
-AppRegistry.registerComponent('Crumb', () => Crumb);
+App.propTypes = {
+  data: PropTypes.object,
+};
+
+const AppWithData = graphql(query)(App);
+
+
+function Root() {
+  return (
+    <ApolloProvider client={client}>
+      <AppWithData />
+    </ApolloProvider>
+  );
+}
+
+AppRegistry.registerComponent('Crumb', () => Root);
