@@ -4,9 +4,12 @@
 	"private": true,
 	"scripts": {
 		"start": "node node_modules/react-native/local-cli/cli.js start",
-		"test": "jest"
+		"test": "jest",
+		"typecheck": "./node_modules/.bin/flow ./"
 	},
 	"dependencies": {
+		"eslint-plugin-flowtype": "^2.30.4",
+		"flow-bin": "^0.40.0",
 		"react": "16.0.0-alpha.6",
 		"react-apollo": "^1.0.0",
 		"react-native": "0.43.0",

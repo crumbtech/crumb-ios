@@ -1,3 +1,4 @@
+/* @flow */
 import React, { PropTypes } from 'react';
 import { AppRegistry, StyleSheet, Text, View, ActivityIndicator } from 'react-native';
 import { ApolloClient, createNetworkInterface, ApolloProvider, graphql, gql } from 'react-apollo';

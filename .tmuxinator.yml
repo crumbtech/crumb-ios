@@ -30,5 +30,4 @@ root: ~/projects/crumb/crumb-ios
 
 windows:
   - ios-editor: vim
-  - ios-simulator: reattach-to-user-namespace react-native run-ios
-  - ios-shell:
+  - ios-shell: open ios/Crumb.xcodeproj/
