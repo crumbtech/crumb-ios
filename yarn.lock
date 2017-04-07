@@ -3039,6 +3039,10 @@ react-devtools-core@^2.0.8:
     loose-envify "^1.1.0"
     object-assign "^4.1.0"
 
+react-native-config@^0.3.1:
+  version "0.3.1"
+  resolved "https://registry.yarnpkg.com/react-native-config/-/react-native-config-0.3.1.tgz#981d98eee2c4e467397cd9306f5b6958c501c6e8"
+
 react-native@0.43.0:
   version "0.43.0"
   resolved "https://registry.yarnpkg.com/react-native/-/react-native-0.43.0.tgz#782b3e3918590d36f9b362b80d72341e8468c3aa"
