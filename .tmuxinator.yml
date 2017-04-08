@@ -30,4 +30,5 @@ root: ~/projects/crumb/crumb-ios
 
 windows:
   - ios-editor: vim
+  - ios-unittests: npm run test:watch
   - ios-shell: open ios/Crumb.xcodeproj/
