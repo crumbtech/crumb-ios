@@ -10,7 +10,7 @@ export const register = () => dispatch => {
   fetch(`${Config.BACKEND_URL}/auth/register`, {
     method: 'POST',
     headers: {
-      'Accept': 'application/json',
+      'Accept': 'application/json', // eslint-disable-line quote-props
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
