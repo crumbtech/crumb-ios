@@ -1,6 +1,8 @@
 import { combineReducers, createStore, applyMiddleware } from 'redux';
 import { createLogger } from 'redux-logger';
+import thunk from 'redux-thunk';
 import Config from 'react-native-config';
+
 import authReducer from './modules/auth';
 import apolloClient from '../apollo';
 
@@ -9,22 +11,26 @@ const reducer = combineReducers({
   apollo: apolloClient.reducer(),
 });
 
-const logger = createLogger();
+const loggerMiddleware = createLogger();
 let middleware;
 
 if (Config.CRUMB_ENV === 'dev') {
   middleware = applyMiddleware(
     apolloClient.middleware(),
-    logger,
+    loggerMiddleware,
+    thunk,
   );
 } else {
   middleware = applyMiddleware(
     apolloClient.middleware(),
+    thunk,
   );
 }
 
-export default createStore(
+const store = createStore(
   reducer,
   {}, // initial state
   middleware,
 );
+
+export default store;

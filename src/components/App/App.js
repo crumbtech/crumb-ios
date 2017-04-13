@@ -1,8 +1,7 @@
 import React, { PropTypes } from 'react';
 import {
-  ActivityIndicator,
+  Button,
   View,
-  Text,
   StyleSheet,
 } from 'react-native';
 
@@ -14,22 +13,17 @@ const styles = StyleSheet.create({
   },
 });
 
-function App({ data }) {
+function App({ data, register }) {
   return (
     <View style={styles.container}>
-      {data.loading ? (
-        <ActivityIndicator />
-      ) : (
-        data.allCrumbs.map(crumb => (
-          <Text>{`${crumb.id}: ${crumb.status}`}</Text>
-        ))
-      )}
+      <Button onPress={register} title="Sign Up" />
     </View>
   );
 }
 
 App.propTypes = {
   data: PropTypes.object,
+  register: PropTypes.func,
 };
 
 export default App;
