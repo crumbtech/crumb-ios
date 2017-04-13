@@ -1,8 +1,13 @@
+import { AsyncStorage } from 'react-native';
 import Config from 'react-native-config';
 
 export const REGISTER = 'crumb/auth/register';
 export const REGISTER_COMPLETE = 'crumb/auth/register-complete';
 export const LOGIN = 'crumb/auth/login';
+
+const persistToken = (authToken) => {
+  AsyncStorage.setItem('@Crumb:authToken', authToken);
+};
 
 export const register = () => dispatch => {
   dispatch({ type: REGISTER });
@@ -18,11 +23,19 @@ export const register = () => dispatch => {
       password: 'password',
     }),
   })
-  .then(res => res.json())
-  .then(res => dispatch({
-    type: REGISTER_COMPLETE,
-    authToken: res.auth_token,
-  }));
+  .then(res => {
+    if (res.status === 200) {
+      res.json().then(json => {
+        dispatch({
+          type: REGISTER_COMPLETE,
+          authToken: json.auth_token,
+        });
+        persistToken(json.auth_token);
+      });
+    } else if (res.status === 202) {
+      console.log('user already exists');
+    }
+  });
 };
 
 export const login = () => ({
