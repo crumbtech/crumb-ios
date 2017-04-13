@@ -12,10 +12,12 @@ const query = gql`
     }
   }`;
 
-const connected = connect(null, {
+const Connected = connect(state => ({
+  authPending: state.auth.pending,
+}), {
   register,
 })(App);
 
-const connectedWithData = graphql(query)(connected);
+const ConnectedWithData = graphql(query)(Connected);
 
-export default connectedWithData;
+export default ConnectedWithData;

@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
 import {
+  ActivityIndicator,
   Button,
   View,
   StyleSheet,
@@ -13,17 +14,21 @@ const styles = StyleSheet.create({
   },
 });
 
-function App({ data, register }) {
+function App({ authPending, data, register }) {
   return (
     <View style={styles.container}>
-      <Button onPress={register} title="Sign Up" />
+      {authPending ? (
+        <ActivityIndicator />
+      ) : (
+        <Button onPress={register} title="Sign Up" />
+      )}
     </View>
   );
 }
 
 App.propTypes = {
-  data: PropTypes.object,
-  register: PropTypes.func,
+  data: PropTypes.object.isRequired, // eslint-disable-line react/forbid-prop-types
+  register: PropTypes.func.isRequired,
 };
 
 export default App;

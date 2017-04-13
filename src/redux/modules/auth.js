@@ -1,16 +1,25 @@
 import { AsyncStorage } from 'react-native';
 import Config from 'react-native-config';
 
-export const REGISTER = 'crumb/auth/register';
-export const REGISTER_COMPLETE = 'crumb/auth/register-complete';
+export const AUTH_PENDING = 'crumb/auth/auth-pending';
+export const AUTH_TOKEN_PERSISTED = 'crumb/auth/auth-token-set';
+export const AUTH_TOKEN_RETRIEVED = 'crumb/auth/auth-token-retrieved';
 export const LOGIN = 'crumb/auth/login';
 
-const persistToken = (authToken) => {
-  AsyncStorage.setItem('@Crumb:authToken', authToken);
+const persistAuthToken = (authToken) => async dispatch => {
+  dispatch({ type: AUTH_PENDING });
+  await AsyncStorage.setItem('@Crumb:authToken', authToken);
+  dispatch({ type: AUTH_TOKEN_PERSISTED, authToken });
+};
+
+export const getAuthToken = () => async dispatch => {
+  dispatch({ type: AUTH_PENDING });
+  const token = await AsyncStorage.getItem('@Crumb:authToken');
+  dispatch({ type: AUTH_TOKEN_RETRIEVED, authToken: token });
 };
 
 export const register = () => dispatch => {
-  dispatch({ type: REGISTER });
+  dispatch({ type: AUTH_PENDING });
 
   fetch(`${Config.BACKEND_URL}/auth/register`, {
     method: 'POST',
@@ -26,11 +35,7 @@ export const register = () => dispatch => {
   .then(res => {
     if (res.status === 200) {
       res.json().then(json => {
-        dispatch({
-          type: REGISTER_COMPLETE,
-          authToken: json.auth_token,
-        });
-        persistToken(json.auth_token);
+        dispatch(persistAuthToken(json.auth_token));
       });
     } else if (res.status === 202) {
       console.log('user already exists');
@@ -43,16 +48,18 @@ export const login = () => ({
 });
 
 const defaultState = {
-  pending: false,
-  authToken: '',
+  pending: true,
+  authToken: null,
 };
 
 export default function reducer(state = defaultState, action) {
   switch (action.type) {
-    case REGISTER:
+    case AUTH_PENDING:
       return { ...state, pending: true };
-    case REGISTER_COMPLETE:
-      return { ...state, authToken: action.authToken };
+    case AUTH_TOKEN_PERSISTED:
+      return { ...state, authToken: action.authToken, pending: false };
+    case AUTH_TOKEN_RETRIEVED:
+      return { ...state, authToken: action.authToken, pending: false };
     default:
       return state;
   }
