@@ -6,6 +6,6 @@ import { register } from '../../redux/modules/auth';
 
 export default reduxForm({
   form: 'AuthForm',
-  onSubmit: (values, dispatch) => dispatch(register()),
+  onSubmit: (values, dispatch) => dispatch(register(values)),
   validate: validator,
 })(AuthForm);

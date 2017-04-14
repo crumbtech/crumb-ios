@@ -13,9 +13,6 @@ import App from './src/components/App';
 an auth token stored on the device */
 store.dispatch(getAuthToken());
 
-// this should be removed asap
-AsyncStorage.removeItem('@Crumb:authToken');
-
 function Crumb() {
   return (
     <ApolloProvider store={store} client={client}>

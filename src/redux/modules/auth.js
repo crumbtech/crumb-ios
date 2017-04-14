@@ -43,9 +43,14 @@ const sendRegisterRequest = async (firstName, lastName, phoneNumber, password) =
   return res;
 };
 
-export const register = () => async dispatch => {
+export const register = ({
+  firstName,
+  lastName,
+  phoneNumber,
+  password,
+}) => async dispatch => {
   dispatch({ type: AUTH_PENDING });
-  const res = await sendRegisterRequest('Ross', 'Creighton', '+12345678910', 'password');
+  const res = await sendRegisterRequest(firstName, lastName, phoneNumber, password);
   const jsonBody = await res.json();
 
   if (res.status === 200) {
