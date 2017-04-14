@@ -1,6 +1,6 @@
 /* @flow */
 import React from 'react';
-import { AppRegistry } from 'react-native';
+import { AppRegistry, AsyncStorage } from 'react-native';
 import { ApolloProvider } from 'react-apollo';
 
 import client from './src/apollo';
@@ -12,6 +12,9 @@ import App from './src/components/App';
 /* right away, check to see if there is
 an auth token stored on the device */
 store.dispatch(getAuthToken());
+
+// this should be removed asap
+AsyncStorage.removeItem('@Crumb:authToken');
 
 function Crumb() {
   return (

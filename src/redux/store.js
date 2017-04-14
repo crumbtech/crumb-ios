@@ -1,14 +1,16 @@
 import { combineReducers, createStore, applyMiddleware } from 'redux';
 import { createLogger } from 'redux-logger';
 import thunk from 'redux-thunk';
+import { reducer as formReducer } from 'redux-form';
 import Config from 'react-native-config';
 
-import authReducer, { getAuthToken } from './modules/auth';
+import authReducer from './modules/auth';
 import apolloClient from '../apollo';
 
 const reducer = combineReducers({
   auth: authReducer,
   apollo: apolloClient.reducer(),
+  form: formReducer,
 });
 
 const loggerMiddleware = createLogger();

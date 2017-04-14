@@ -5,17 +5,18 @@ import {
 } from 'react-native';
 
 function AuthForm({
-  register,
+  handleSubmit,
 }) {
   return (
     <View>
-      <Button onPress={register} title="Sign Up" />
+      <Button onPress={handleSubmit} title="Sign Up" />
     </View>
   );
 }
 
 AuthForm.propTypes = {
-  register: PropTypes.func.isRequired,
+  handleSubmit: PropTypes.func.isRequired,
 };
 
 export default AuthForm;
+

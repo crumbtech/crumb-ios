@@ -1,10 +1,11 @@
-import { connect } from 'react-redux';
+import { reduxForm } from 'redux-form';
 
 import AuthForm from './AuthForm';
+import validator from './validator';
 import { register } from '../../redux/modules/auth';
 
-const Connected = connect(null, {
-  register,
+export default reduxForm({
+  form: 'AuthForm',
+  onSubmit: (values, dispatch) => dispatch(register()),
+  validate: validator,
 })(AuthForm);
-
-export default Connected;

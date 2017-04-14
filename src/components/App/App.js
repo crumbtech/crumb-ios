@@ -22,7 +22,6 @@ function App({
   isAuthenticated,
   firstName,
   lastName,
-  register,
 }) {
   return (
     <View style={styles.container}>
@@ -40,7 +39,6 @@ App.propTypes = {
   isAuthenticated: PropTypes.bool.isRequired,
   firstName: PropTypes.string.isRequired,
   lastName: PropTypes.string.isRequired,
-  register: PropTypes.func.isRequired,
 };
 
 export default App;
