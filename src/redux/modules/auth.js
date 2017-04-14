@@ -4,6 +4,7 @@ import Config from 'react-native-config';
 export const AUTH_PENDING = 'crumb/auth/auth-pending';
 export const AUTH_TOKEN_PERSISTED = 'crumb/auth/auth-token-set';
 export const AUTH_TOKEN_RETRIEVED = 'crumb/auth/auth-token-retrieved';
+export const AUTH_TOKEN_NOT_FOUND = 'crumb/auth/no-auth-found';
 export const USER_AUTHENTICATED = 'crumb/auth/user-authenticated';
 export const AUTH_ERROR = 'crumb/auth/auth-error';
 export const LOGIN = 'crumb/auth/login';
@@ -17,7 +18,11 @@ const persistAuthToken = (authToken) => async dispatch => {
 export const getAuthToken = () => async dispatch => {
   dispatch({ type: AUTH_PENDING });
   const token = await AsyncStorage.getItem('@Crumb:authToken');
-  dispatch({ type: AUTH_TOKEN_RETRIEVED, authToken: token });
+  if (token) {
+    dispatch({ type: AUTH_TOKEN_RETRIEVED, authToken: token });
+  } else {
+    dispatch({ type: AUTH_TOKEN_NOT_FOUND });
+  }
 };
 
 const sendRegisterRequest = async (firstName, lastName, phoneNumber, password) => {
@@ -85,12 +90,19 @@ export default function reducer(state = defaultState, action) {
         authenticated: true,
         pending: false,
       };
+    case AUTH_TOKEN_NOT_FOUND:
+      return {
+        ...state,
+        authToken: '',
+        authenticated: false,
+        pending: false,
+      };
     case USER_AUTHENTICATED:
       return {
         ...state,
         firstName: action.firstName,
         lastName: action.lastName,
-      }
+      };
     case AUTH_ERROR:
       return { ...state, error: action.error, pending: false };
     default:
