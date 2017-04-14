@@ -4,6 +4,7 @@ import Config from 'react-native-config';
 export const AUTH_PENDING = 'crumb/auth/auth-pending';
 export const AUTH_TOKEN_PERSISTED = 'crumb/auth/auth-token-set';
 export const AUTH_TOKEN_RETRIEVED = 'crumb/auth/auth-token-retrieved';
+export const USER_AUTHENTICATED = 'crumb/auth/user-authenticated';
 export const AUTH_ERROR = 'crumb/auth/auth-error';
 export const LOGIN = 'crumb/auth/login';
 
@@ -19,7 +20,7 @@ export const getAuthToken = () => async dispatch => {
   dispatch({ type: AUTH_TOKEN_RETRIEVED, authToken: token });
 };
 
-const sendRegisterRequest = async (phoneNumber, password) => {
+const sendRegisterRequest = async (firstName, lastName, phoneNumber, password) => {
   const res = await fetch(`${Config.BACKEND_URL}/auth/register`, {
     method: 'POST',
     headers: {
@@ -27,6 +28,8 @@ const sendRegisterRequest = async (phoneNumber, password) => {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
+      first_name: firstName,
+      last_name: lastName,
       phone_number: phoneNumber,
       password,
     }),
@@ -37,11 +40,16 @@ const sendRegisterRequest = async (phoneNumber, password) => {
 
 export const register = () => async dispatch => {
   dispatch({ type: AUTH_PENDING });
-  const res = await sendRegisterRequest('+12345678910', 'password');
+  const res = await sendRegisterRequest('Ross', 'Creighton', '+12345678910', 'password');
   const jsonBody = await res.json();
 
   if (res.status === 200) {
     dispatch(persistAuthToken(jsonBody.auth_token));
+    dispatch({
+      type: USER_AUTHENTICATED,
+      firstName: jsonBody.first_name,
+      lastName: jsonBody.last_name,
+    });
   } else if (res.status === 202) {
     // user already exists, we need to login
     dispatch({ type: AUTH_ERROR, error: jsonBody.status });
@@ -55,6 +63,8 @@ export const login = () => ({
 const defaultState = {
   pending: true,
   authToken: null,
+  error: null,
+  authenticated: false,
 };
 
 export default function reducer(state = defaultState, action) {
@@ -62,9 +72,25 @@ export default function reducer(state = defaultState, action) {
     case AUTH_PENDING:
       return { ...state, pending: true };
     case AUTH_TOKEN_PERSISTED:
-      return { ...state, authToken: action.authToken, pending: false };
+      return {
+        ...state,
+        authToken: action.authToken,
+        authenticated: true,
+        pending: false,
+      };
     case AUTH_TOKEN_RETRIEVED:
-      return { ...state, authToken: action.authToken, pending: false };
+      return {
+        ...state,
+        authToken: action.authToken,
+        authenticated: true,
+        pending: false,
+      };
+    case USER_AUTHENTICATED:
+      return {
+        ...state,
+        firstName: action.firstName,
+        lastName: action.lastName,
+      }
     case AUTH_ERROR:
       return { ...state, error: action.error, pending: false };
     default:
