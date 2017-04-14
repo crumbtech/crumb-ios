@@ -4,6 +4,7 @@ import Config from 'react-native-config';
 export const AUTH_PENDING = 'crumb/auth/auth-pending';
 export const AUTH_TOKEN_PERSISTED = 'crumb/auth/auth-token-set';
 export const AUTH_TOKEN_RETRIEVED = 'crumb/auth/auth-token-retrieved';
+export const AUTH_ERROR = 'crumb/auth/auth-error';
 export const LOGIN = 'crumb/auth/login';
 
 const persistAuthToken = (authToken) => async dispatch => {
@@ -18,29 +19,33 @@ export const getAuthToken = () => async dispatch => {
   dispatch({ type: AUTH_TOKEN_RETRIEVED, authToken: token });
 };
 
-export const register = () => dispatch => {
-  dispatch({ type: AUTH_PENDING });
-
-  fetch(`${Config.BACKEND_URL}/auth/register`, {
+const sendRegisterRequest = async (phoneNumber, password) => {
+  const res = await fetch(`${Config.BACKEND_URL}/auth/register`, {
     method: 'POST',
     headers: {
       'Accept': 'application/json', // eslint-disable-line quote-props
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      phone_number: '+12345678910',
-      password: 'password',
+      phone_number: phoneNumber,
+      password,
     }),
-  })
-  .then(res => {
-    if (res.status === 200) {
-      res.json().then(json => {
-        dispatch(persistAuthToken(json.auth_token));
-      });
-    } else if (res.status === 202) {
-      console.log('user already exists');
-    }
   });
+
+  return res;
+};
+
+export const register = () => async dispatch => {
+  dispatch({ type: AUTH_PENDING });
+  const res = await sendRegisterRequest('+12345678910', 'password');
+  const jsonBody = await res.json();
+
+  if (res.status === 200) {
+    dispatch(persistAuthToken(jsonBody.auth_token));
+  } else if (res.status === 202) {
+    // user already exists, we need to login
+    dispatch({ type: AUTH_ERROR, error: jsonBody.status });
+  }
 };
 
 export const login = () => ({
@@ -60,6 +65,8 @@ export default function reducer(state = defaultState, action) {
       return { ...state, authToken: action.authToken, pending: false };
     case AUTH_TOKEN_RETRIEVED:
       return { ...state, authToken: action.authToken, pending: false };
+    case AUTH_ERROR:
+      return { ...state, error: action.error, pending: false };
     default:
       return state;
   }
