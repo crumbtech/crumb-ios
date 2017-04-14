@@ -7,6 +7,8 @@ import {
   StyleSheet,
 } from 'react-native';
 
+import AuthForm from '../AuthForm';
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -20,13 +22,12 @@ function App({
   isAuthenticated,
   firstName,
   lastName,
-  data,
   register,
 }) {
   return (
     <View style={styles.container}>
       { authPending && <ActivityIndicator /> }
-      { !authPending && !isAuthenticated && <Button onPress={register} title="Sign Up" /> }
+      { !authPending && !isAuthenticated && <AuthForm />}
       { isAuthenticated && (
         <Text>You're logged in as {firstName} {lastName}</Text>
       )}
@@ -39,7 +40,6 @@ App.propTypes = {
   isAuthenticated: PropTypes.bool.isRequired,
   firstName: PropTypes.string.isRequired,
   lastName: PropTypes.string.isRequired,
-  data: PropTypes.object.isRequired, // eslint-disable-line react/forbid-prop-types
   register: PropTypes.func.isRequired,
 };
 
