@@ -35,7 +35,7 @@ const sendRegisterRequest = async (firstName, lastName, phoneNumber) => {
     body: JSON.stringify({
       first_name: firstName,
       last_name: lastName,
-      phone_number: phoneNumber,
+      phone_number: `+${phoneNumber}`,
     }),
   });
 
