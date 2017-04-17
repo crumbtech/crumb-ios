@@ -39,10 +39,17 @@ function App({
 
 App.propTypes = {
   authPending: PropTypes.bool.isRequired,
-  userId: PropTypes.string.isRequired,
-  authToken: PropTypes.string.isRequired,
-  firstName: PropTypes.string.isRequired,
-  lastName: PropTypes.string.isRequired,
+  userId: PropTypes.string,
+  authToken: PropTypes.string,
+  firstName: PropTypes.string,
+  lastName: PropTypes.string,
+};
+
+App.defaultProps = {
+  userId: '',
+  authToken: '',
+  firstName: '',
+  lastName: '',
 };
 
 export default App;

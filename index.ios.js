@@ -1,17 +1,29 @@
 /* @flow */
 import React from 'react';
-import { AppRegistry, AsyncStorage } from 'react-native';
+import { AppRegistry } from 'react-native';
 import { ApolloProvider } from 'react-apollo';
 
 import client from './src/apollo';
 import store from './src/redux/store';
-import { getAuthToken } from './src/redux/modules/auth';
+import { getPeristedUser } from './src/redux/modules/auth';
 import App from './src/components/App';
+
+// uncomment to remove current user from dev device
+/*
+ * import { AsyncStorage } from 'react-native';
+ *AsyncStorage.multiRemove([
+ *  '@Crumb:authToken',
+ *  '@Crumb:userId',
+ *  '@Crumb:firstName',
+ *  '@Crumb:lastName',
+ *]);
+ */
 
 
 /* right away, check to see if there is
-an auth token stored on the device */
-store.dispatch(getAuthToken());
+a user stored on the device */
+store.dispatch(getPeristedUser());
+
 
 function Crumb() {
   return (

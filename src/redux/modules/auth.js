@@ -5,6 +5,32 @@ const AUTH_PENDING = 'crumb/auth/pending';
 const AUTH_ERROR = 'crumb/auth/error';
 const REGISTER_COMPLETE = 'crumb/auth/register-complete';
 const CONFIRM_COMPLETE = 'crumb/auth/confirm-complete';
+const USER_RETRIEVED = 'crumb/auth/user-retrieved';
+const NO_USER_ON_DEVICE = 'crumb/auth/user-not-found';
+
+const persistUser = (authToken, userId, firstName, lastName) => {
+  AsyncStorage.multiSet([
+    ['@Crumb:authToken', authToken],
+    ['@Crumb:userId', userId],
+    ['@Crumb:firstName', firstName],
+    ['@Crumb:lastName', lastName],
+  ]);
+};
+
+export const getPeristedUser = () => async dispatch => {
+  dispatch({ type: AUTH_PENDING });
+  const authToken = await AsyncStorage.getItem('@Crumb:authToken');
+  const userId = await AsyncStorage.getItem('@Crumb:userId');
+  const firstName = await AsyncStorage.getItem('@Crumb:firstName');
+  const lastName = await AsyncStorage.getItem('@Crumb:lastName');
+  const user = { authToken, userId, firstName, lastName };
+
+  if (authToken && userId && firstName && lastName) {
+    dispatch({ type: USER_RETRIEVED, user });
+  } else {
+    dispatch({ type: NO_USER_ON_DEVICE });
+  }
+};
 
 export const register = ({
   firstName,
@@ -42,7 +68,7 @@ export const register = ({
 
 export const confirm = ({ confirmationCode }) => async (dispatch, getState) => {
   dispatch({ type: AUTH_PENDING });
-  console.log(getState());
+  const state = getState();
   const res = await fetch(`${Config.BACKEND_URL}/auth/confirm`, {
     method: 'POST',
     headers: {
@@ -50,7 +76,7 @@ export const confirm = ({ confirmationCode }) => async (dispatch, getState) => {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      user_id: getState().auth.userId,
+      user_id: state.auth.userId,
       confirmation_code: confirmationCode,
     }),
   });
@@ -62,6 +88,8 @@ export const confirm = ({ confirmationCode }) => async (dispatch, getState) => {
       type: CONFIRM_COMPLETE,
       authToken: jsonBody.auth_token,
     });
+    const { userId, firstName, lastName } = state.auth;
+    persistUser(jsonBody.auth_token, userId, firstName, lastName)
   } else {
     dispatch({ type: AUTH_ERROR, error: jsonBody.status });
   }
@@ -95,6 +123,17 @@ export default function reducer(state = defaultState, action) {
         ...state,
         pending: false,
         authToken: action.authToken,
+      };
+    case USER_RETRIEVED:
+      return {
+        ...state,
+        pending: false,
+        ...action.user,
+      };
+    case NO_USER_ON_DEVICE:
+      return {
+        ...state,
+        pending: false,
       };
     default:
       return state;
