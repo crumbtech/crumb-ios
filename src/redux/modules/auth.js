@@ -25,7 +25,7 @@ export const getAuthToken = () => async dispatch => {
   }
 };
 
-const sendRegisterRequest = async (firstName, lastName, phoneNumber, password) => {
+const sendRegisterRequest = async (firstName, lastName, phoneNumber) => {
   const res = await fetch(`${Config.BACKEND_URL}/auth/register`, {
     method: 'POST',
     headers: {
@@ -36,7 +36,6 @@ const sendRegisterRequest = async (firstName, lastName, phoneNumber, password) =
       first_name: firstName,
       last_name: lastName,
       phone_number: phoneNumber,
-      password,
     }),
   });
 
@@ -47,10 +46,9 @@ export const register = ({
   firstName,
   lastName,
   phoneNumber,
-  password,
 }) => async dispatch => {
   dispatch({ type: AUTH_PENDING });
-  const res = await sendRegisterRequest(firstName, lastName, phoneNumber, password);
+  const res = await sendRegisterRequest(firstName, lastName, phoneNumber);
   const jsonBody = await res.json();
 
   if (res.status === 200) {

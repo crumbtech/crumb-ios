@@ -49,17 +49,6 @@ const renderFieldPhoneNumber = ({ input: { onChange, value }}) => (
   </View>
 );
 
-const renderFieldPassword = ({ input: { onChange, value }}) => (
-  <View style={inputViewStyles}>
-    <TextInput
-      style={inputStyles}
-      value={value}
-      placeholder="Password"
-      onChangeText={onChange}
-    />
-  </View>
-);
-
 function AuthForm({
   handleSubmit,
 }) {
@@ -76,10 +65,6 @@ function AuthForm({
       <Field
         name="phoneNumber"
         component={renderFieldPhoneNumber}
-      />
-      <Field
-        name="password"
-        component={renderFieldPassword}
       />
       <Button onPress={handleSubmit} title="Sign Up" />
     </View>
