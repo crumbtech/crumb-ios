@@ -4,7 +4,8 @@ import App from './App';
 
 const Connected = connect(state => ({
   authPending: state.auth.pending,
-  isAuthenticated: state.auth.authenticated,
+  userId: state.auth.userId,
+  authToken: state.auth.authToken,
   firstName: state.auth.firstName,
   lastName: state.auth.lastName,
 }))(App);

@@ -8,6 +8,7 @@ import {
 } from 'react-native';
 
 import AuthForm from '../AuthForm';
+import ConfirmForm from '../ConfirmForm';
 
 const styles = StyleSheet.create({
   container: {
@@ -19,15 +20,17 @@ const styles = StyleSheet.create({
 
 function App({
   authPending,
-  isAuthenticated,
+  userId,
+  authToken,
   firstName,
   lastName,
 }) {
   return (
     <View style={styles.container}>
       { authPending && <ActivityIndicator /> }
-      { !authPending && !isAuthenticated && <AuthForm />}
-      { isAuthenticated && (
+      { !authPending && !userId && <AuthForm />}
+      { !authPending && userId && !authToken && <ConfirmForm />}
+      { userId && authToken && (
         <Text>You're logged in as {firstName} {lastName}</Text>
       )}
     </View>
@@ -36,7 +39,8 @@ function App({
 
 App.propTypes = {
   authPending: PropTypes.bool.isRequired,
-  isAuthenticated: PropTypes.bool.isRequired,
+  userId: PropTypes.string.isRequired,
+  authToken: PropTypes.string.isRequired,
   firstName: PropTypes.string.isRequired,
   lastName: PropTypes.string.isRequired,
 };
