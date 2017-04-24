@@ -4,9 +4,11 @@ import Config from 'react-native-config';
 const AUTH_PENDING = 'crumb/auth/pending';
 const AUTH_ERROR = 'crumb/auth/error';
 const REGISTER_COMPLETE = 'crumb/auth/register-complete';
+const LOGIN_COMPLETE = 'crumb/auth/login-complete';
 const CONFIRM_COMPLETE = 'crumb/auth/confirm-complete';
 const USER_RETRIEVED = 'crumb/auth/user-retrieved';
 const NO_USER_ON_DEVICE = 'crumb/auth/user-not-found';
+const CHANGE_FORM_TYPE = 'crumb/auth/change-form-type';
 
 const persistUser = (authToken, userId, firstName, lastName) => {
   AsyncStorage.multiSet([
@@ -66,6 +68,36 @@ export const register = ({
   }
 };
 
+export const login = ({
+  phoneNumber,
+}) => async dispatch => {
+  dispatch({ type: AUTH_PENDING });
+
+  const res = await fetch(`${Config.BACKEND_URL}/auth/login`, {
+    method: 'POST',
+    headers: {
+      'Accept': 'application/json', // eslint-disable-line quote-props
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      phone_number: `+${phoneNumber}`,
+    }),
+  });
+
+  const jsonBody = await res.json();
+
+  if (res.status === 200) {
+    dispatch({
+      type: LOGIN_COMPLETE,
+      firstName: jsonBody.first_name,
+      lastName: jsonBody.last_name,
+      userId: jsonBody.user_id,
+    });
+  } else {
+    dispatch({ type: AUTH_ERROR, error: jsonBody.status });
+  }
+};
+
 export const confirm = ({ confirmationCode }) => async (dispatch, getState) => {
   dispatch({ type: AUTH_PENDING });
   const state = getState();
@@ -111,6 +143,14 @@ export default function reducer(state = defaultState, action) {
     case AUTH_ERROR:
       return { ...state, pending: false, error: action.error };
     case REGISTER_COMPLETE:
+      return {
+        ...state,
+        pending: false,
+        userId: action.userId,
+        firstName: action.firstName,
+        lastName: action.lastName,
+      };
+    case LOGIN_COMPLETE:
       return {
         ...state,
         pending: false,

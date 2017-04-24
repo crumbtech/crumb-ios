@@ -39,7 +39,7 @@ const renderFieldLastName = ({ input: { onChange, value }}) => (
   </View>
 );
 
-function AuthForm({
+function RegisterForm({
   handleSubmit,
 }) {
   return (
@@ -58,8 +58,8 @@ function AuthForm({
   );
 }
 
-AuthForm.propTypes = {
+RegisterForm.propTypes = {
   handleSubmit: PropTypes.func.isRequired,
 };
 
-export default AuthForm;
+export default RegisterForm;
