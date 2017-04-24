@@ -5,7 +5,7 @@ import {
   TextInput,
 } from 'react-native';
 import { Field } from 'redux-form';
-import { formatPhoneNumber } from '../../lib';
+import PhoneNumberInput from '../PhoneNumberInput';
 
 const inputStyles = {
   height: 40,
@@ -39,18 +39,6 @@ const renderFieldLastName = ({ input: { onChange, value }}) => (
   </View>
 );
 
-const renderFieldPhoneNumber = ({ input: { onChange, value } }) => (
-  <View style={inputViewStyles}>
-    <TextInput
-      style={inputStyles}
-      value={value}
-      placeholder="+1 (555) 555 - 555"
-      onChangeText={onChange}
-    />
-  </View>
-);
-
-
 function AuthForm({
   handleSubmit,
 }) {
@@ -64,11 +52,7 @@ function AuthForm({
         name="lastName"
         component={renderFieldLastName}
       />
-      <Field
-        name="phoneNumber"
-        component={renderFieldPhoneNumber}
-        normalize={formatPhoneNumber}
-      />
+      <PhoneNumberInput />
       <Button onPress={handleSubmit} title="Sign Up" />
     </View>
   );

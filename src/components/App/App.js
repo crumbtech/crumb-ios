@@ -7,7 +7,7 @@ import {
   StyleSheet,
 } from 'react-native';
 
-import AuthForm from '../AuthForm';
+import RegisterForm from '../RegisterForm';
 import ConfirmForm from '../ConfirmForm';
 
 const styles = StyleSheet.create({
@@ -28,7 +28,7 @@ function App({
   return (
     <View style={styles.container}>
       { authPending && <ActivityIndicator /> }
-      { !authPending && !userId && <AuthForm />}
+      { !authPending && !userId && <RegisterForm /> }
       { !authPending && userId && !authToken && <ConfirmForm />}
       { userId && authToken && (
         <Text>You're logged in as {firstName} {lastName}</Text>
