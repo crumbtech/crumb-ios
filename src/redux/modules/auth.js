@@ -121,13 +121,17 @@ export const confirm = ({ confirmationCode }) => async (dispatch, getState) => {
       authToken: jsonBody.auth_token,
     });
     const { userId, firstName, lastName } = state.auth;
-    persistUser(jsonBody.auth_token, userId, firstName, lastName)
+    persistUser(jsonBody.auth_token, userId, firstName, lastName);
   } else {
     dispatch({ type: AUTH_ERROR, error: jsonBody.status });
   }
 };
 
+export const showRegisterForm = () => dispatch => dispatch({ type: CHANGE_FORM_TYPE, form: 'register' });
+export const showLoginForm = () => dispatch => dispatch({ type: CHANGE_FORM_TYPE, form: 'login' });
+
 const defaultState = {
+  formType: 'register',
   pending: false,
   error: null,
   authToken: null,
@@ -174,6 +178,11 @@ export default function reducer(state = defaultState, action) {
       return {
         ...state,
         pending: false,
+      };
+    case CHANGE_FORM_TYPE:
+      return {
+        ...state,
+        formType: action.form,
       };
     default:
       return state;

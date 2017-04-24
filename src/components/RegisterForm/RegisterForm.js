@@ -41,6 +41,7 @@ const renderFieldLastName = ({ input: { onChange, value }}) => (
 
 function RegisterForm({
   handleSubmit,
+  showLoginForm,
 }) {
   return (
     <View style={{ width: '100%' }}>
@@ -54,12 +55,14 @@ function RegisterForm({
       />
       <PhoneNumberInput />
       <Button onPress={handleSubmit} title="Sign Up" />
+      <Button onPress={showLoginForm} title="Log In" />
     </View>
   );
 }
 
 RegisterForm.propTypes = {
   handleSubmit: PropTypes.func.isRequired,
+  showLoginForm: PropTypes.func.isRequired,
 };
 
 export default RegisterForm;

@@ -8,6 +8,7 @@ import {
 } from 'react-native';
 
 import RegisterForm from '../RegisterForm';
+import LoginForm from '../LoginForm';
 import ConfirmForm from '../ConfirmForm';
 
 const styles = StyleSheet.create({
@@ -19,6 +20,7 @@ const styles = StyleSheet.create({
 });
 
 function App({
+  formType,
   authPending,
   userId,
   authToken,
@@ -28,7 +30,9 @@ function App({
   return (
     <View style={styles.container}>
       { authPending && <ActivityIndicator /> }
-      { !authPending && !userId && <RegisterForm /> }
+      { !authPending && !userId && (
+        formType === 'register' ? <RegisterForm /> : <LoginForm />
+      )}
       { !authPending && userId && !authToken && <ConfirmForm />}
       { userId && authToken && (
         <Text>You're logged in as {firstName} {lastName}</Text>
@@ -38,6 +42,7 @@ function App({
 }
 
 App.propTypes = {
+  formType: PropTypes.oneOf(['register', 'login']).isRequired,
   authPending: PropTypes.bool.isRequired,
   userId: PropTypes.string,
   authToken: PropTypes.string,
